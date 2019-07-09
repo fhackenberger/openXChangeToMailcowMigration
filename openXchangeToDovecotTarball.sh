@@ -10,7 +10,7 @@ cd $DIR
 mkdir -p mailcow-data
 sudo rm -Rf mailcow-data/$domain/$localname
 sudo rm -Rf mailcow-data/$email.tar.gz
-sudo ./cyrus2dovecot --cyrus-inbox="/var/spool/cyrus/mail/%h/user/%u" --cyrus-seen="/var/lib/cyrus/user/%h/%u.seen" --cyrus-sub="/var/lib/cyrus/user/%h/%u.sub" --dovecot-inbox="$DIR/mailcow-data/$domain/$localname/Maildir" $cyrusdir > /dev/null;
+sudo ./cyrus2dovecot/cyrus2dovecot --cyrus-inbox="/var/spool/cyrus/mail/%h/user/%u" --cyrus-seen="/var/lib/cyrus/user/%h/%u.seen" --cyrus-sub="/var/lib/cyrus/user/%h/%u.sub" --dovecot-inbox="$DIR/mailcow-data/$domain/$localname/Maildir" $cyrusdir > /dev/null;
 rcCode=$?
 if [ $rcCode != 0 ]; then
 	echo cyrus2dovecot failed to run for $cyrusdir

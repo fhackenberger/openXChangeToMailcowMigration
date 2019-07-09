@@ -12,7 +12,7 @@ if [ "$oxUserHost" == "" ]; then
 fi
 oxHostExportScript=$2
 if [ "$oxHostExportScript" == "" ]; then
-	oxHostExportScript=/manual_installs/cyrus2dovecot-master/openXchange2mailcow.sh
+	oxHostExportScript=mailcow-migration/openXchangeToDovecotTarball.sh
 fi
 
 declare -a emailsToConvert
@@ -48,13 +48,13 @@ for Address in "${emailsToConvert[@]}"; do
                 echo Failed to copy tarball: $tarball
                 exit $rcCode
         fi
-	tar --directory=/var/lib/docker/volumes/mailcowdockerized_vmail-vol-1/_data -xf "$localTarball"
+	tar --directory=$MCVMAIL -xf "$localTarball"
         rcCode=$?
         if [ "$rcCode" != 0 ]; then
-                echo Failed to extract tarball: $localTarball to /var/lib/docker/volumes/mailcowdockerized_vmail-vol-1/_data
+                echo Failed to extract tarball: $localTarball to $MCVMAIL
                 exit $rcCode
         fi
-	chown -R 5000:5000 /var/lib/docker/volumes/mailcowdockerized_vmail-vol-1/_data/$domain/;
+	chown -R 5000:5000 $MCVMAIL/$domain/;
 	rm $localTarball
         echo Successfully copied email for $Address
 done
