@@ -28,5 +28,5 @@ scp openxchange.mydomain.com:"mailcow-migration/*.csv" .
 scp openxchange.mydomain.com:/etc/aliases etc_aliases
 # Got the API key from mailcow using the admin login
 ./csvToMailcowAPI.sh
-./importOpenXchangeMails.sh openxchange.mydomain.com openXchangeToDovecotTarball.sh
+./importOpenXchangeMails.sh root@openxchange.mydomain.com
 ```

@@ -12,7 +12,7 @@ if [ "$oxUserHost" == "" ]; then
 fi
 oxHostExportScript=$2
 if [ "$oxHostExportScript" == "" ]; then
-	oxHostExportScript=mailcow-migration/openXchangeToDovecotTarball.sh
+	oxHostExportScript=openXchangeToDovecotTarball.sh
 fi
 
 declare -a emailsToConvert
@@ -35,12 +35,13 @@ for Address in "${emailsToConvert[@]}"; do
 	domain=$(echo "$Address" | sed 's/.*@//');
 	localname=$(echo "$Address" | sed 's/@.*//');
 	echo Exporting email on ${oxUserHost} for $Address with username $userName
-	tarball=$(ssh -tt ${oxUserHost} "$oxHostExportScript $Address $userName" | tr -d '\r\n')
+	ssh -tt ${oxUserHost} "$oxHostExportScript $Address $userName"
         rcCode=$?
         if [ "$rcCode" != 0 ]; then
                 echo Failed to export mails for $Address
                 exit $rcCode
         fi
+	tarball=$(dirname "$oxHostExportScript")/mailcow-data/$Address.tar.gz
 	localTarball=$(echo "$tarball" | sed "s/.*\///")
 	echo Copying $tarball from $oxUserHost
 	scp "${oxUserHost}:$tarball" "$localTarball"
