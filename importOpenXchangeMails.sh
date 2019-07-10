@@ -29,11 +29,12 @@ while IFS='|' read -r Address Domain UserName Description; do
 	emailsToConvert+=($Address)
 	emailToUsername["$Address"]="$UserName"
 done < <(sed -e 's/";"/|/g' -e 's/^"//' -e 's/"$//' users.csv) # Runs the while loop in this shell to update the array, as opposed to using $ cat bla.txt | while xxx; do ... done
+echo Converting the following mailboxes: ${emailsToConvert[@]}
 for Address in "${emailsToConvert[@]}"; do
 	userName=${emailToUsername["$Address"]}
 	domain=$(echo "$Address" | sed 's/.*@//');
 	localname=$(echo "$Address" | sed 's/@.*//');
-	echo Exporting email on ${oxHost} for $Address with username $userName
+	echo Exporting email on ${oxUserHost} for $Address with username $userName
 	tarball=$(ssh -tt ${oxUserHost} "$oxHostExportScript $Address $userName" | tr -d '\r\n')
         rcCode=$?
         if [ "$rcCode" != 0 ]; then
@@ -41,7 +42,7 @@ for Address in "${emailsToConvert[@]}"; do
                 exit $rcCode
         fi
 	localTarball=$(echo "$tarball" | sed "s/.*\///")
-	echo Copying $tarball from $oxHost
+	echo Copying $tarball from $oxUserHost
 	scp "${oxUserHost}:$tarball" "$localTarball"
         rcCode=$?
         if [ "$rcCode" != 0 ]; then
